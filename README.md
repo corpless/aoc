@@ -5,10 +5,10 @@ Project structure
 ```
 └── aocgleam # per language
     ├── src
-    │   ├── inputs
-    │   │   └── day1 # test data
     │   └── users # dir per user
     │       └── susliko
+    ├── inputs
+    │   └── day1 # test data
     └── test
 
 ```
