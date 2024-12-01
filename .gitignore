@@ -1,0 +1,18 @@
+# Some defaults, idk
+*.fpkg
+*.jar
+.GITHUB_TOKEN
+artifact/
+build/
+lib/
+crash_report_*.txt
+
+# Ignore compiled Gleam files
+_build/
+*.beam
+
+# Ignore Erlang build directories
+erl_*/ 
+
+# Ignore dependencies directory (if you're using rebar3 or mix for Erlang dependencies)
+deps/
