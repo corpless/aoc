@@ -10,15 +10,20 @@ pub type ReadError {
 }
 
 pub fn read_ints(path: String) -> Result(List(List(Int)), ReadError) {
-  read_input(path, int.parse)
+  read_input(path, " ", int.parse)
+}
+
+pub fn read_chars(path: String) -> Result(List(List(String)), ReadError) {
+  read_input(path, "", fn(s) { Ok(s) })
 }
 
 pub fn read_strings(path: String) -> Result(List(List(String)), ReadError) {
-  read_input(path, fn(s) { Ok(s) })
+  read_input(path, " ", fn(s) { Ok(s) })
 }
 
 pub fn read_input(
   path: String,
+  line_sep: String,
   parse: fn(String) -> Result(a, Nil),
 ) -> Result(List(List(a)), ReadError) {
   case sf.read(path) {
@@ -27,7 +32,7 @@ pub fn read_input(
       let #(oks, errs) =
         data
         |> string.split("\n")
-        |> list.map(parse_line(_, parse))
+        |> list.map(parse_line(_, line_sep, parse))
         |> result.partition
 
       case list.flatten(errs) {
@@ -44,10 +49,11 @@ pub fn read_input(
 
 fn parse_line(
   line: String,
+  line_sep: String,
   parse: fn(String) -> Result(a, Nil),
 ) -> Result(List(a), List(String)) {
   line
-  |> string.split(" ")
+  |> string.split(line_sep)
   |> list.filter(fn(el) { !string.is_empty(el) })
   |> list.map(fn(el) { result.map_error(parse(el), fn(_) { el }) })
   |> fn(l) {
