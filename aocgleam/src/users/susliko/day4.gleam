@@ -1,12 +1,13 @@
-import gleam/dict.{type Dict}
+import gleam/dict
+import gleam/function
+import gleam/int
 import gleam/io
 import gleam/list
 import gleam/result
-import gleam/string
 import users/susliko/utils
 
 pub fn main() {
-  let assert Ok(chars) = utils.read_chars("inputs/day4/sample.txt")
+  let assert Ok(chars) = utils.read_chars("inputs/day4/input.txt")
   let map =
     chars
     |> list.index_map(fn(row, i) {
@@ -19,30 +20,55 @@ pub fn main() {
     |> dict.from_list
 
   part1(map) |> io.debug
+  part2(map) |> io.debug
 }
 
 fn part1(map) {
-  let starts = find_ij(map, fn(el) { el == "X" }) |> io.debug
-  search(["M", "A", "S"], map, starts)
-  |> list.length
+  let starts = find_ij(map, fn(el) { el == "X" })
+  starts
+  |> list.map(fn(start) {
+    let #(xi, xj) = start
+    let letters = ["X", "M", "A", "S"]
+    move(map, xi, xj, letters, fn(i, j) { #(i - 1, j - 1) }).0
+    + move(map, xi, xj, letters, fn(i, j) { #(i, j - 1) }).0
+    + move(map, xi, xj, letters, fn(i, j) { #(i + 1, j - 1) }).0
+    + move(map, xi, xj, letters, fn(i, j) { #(i - 1, j) }).0
+    + move(map, xi, xj, letters, fn(i, j) { #(i + 1, j) }).0
+    + move(map, xi, xj, letters, fn(i, j) { #(i - 1, j + 1) }).0
+    + move(map, xi, xj, letters, fn(i, j) { #(i, j + 1) }).0
+    + move(map, xi, xj, letters, fn(i, j) { #(i + 1, j + 1) }).0
+  })
+  |> list.fold(0, int.add)
 }
 
-fn search(letters: List(String), map, positions: List(#(Int, Int))) {
-  case letters {
-    [] -> positions
-    [letter, ..rest] -> {
-      let next_positions =
-        positions
-        |> list.flat_map(fn(pos) {
-          let #(i, j) = pos
-          step(map, i, j, letter)
-        })
-      io.debug(next_positions)
-      io.debug(letter)
-      io.debug(list.length(next_positions))
-      search(rest, map, next_positions)
+fn part2(map) {
+  let starts = find_ij(map, fn(el) { el == "M" })
+  starts
+  |> list.flat_map(fn(start) {
+    let #(xi, xj) = start
+    let letters = ["M", "A", "S"]
+    let a = case move(map, xi, xj, letters, fn(i, j) { #(i - 1, j - 1) }) {
+      #(1, #(i, j)) -> [#(i + 2, j + 2)]
+      _ -> []
     }
-  }
+    let b = case move(map, xi, xj, letters, fn(i, j) { #(i + 1, j + 1) }) {
+      #(1, #(i, j)) -> [#(i - 2, j - 2)]
+      _ -> []
+    }
+    let c = case move(map, xi, xj, letters, fn(i, j) { #(i - 1, j + 1) }) {
+      #(1, #(i, j)) -> [#(i + 2, j - 2)]
+      _ -> []
+    }
+    let d = case move(map, xi, xj, letters, fn(i, j) { #(i + 1, j - 1) }) {
+      #(1, #(i, j)) -> [#(i - 2, j + 2)]
+      _ -> []
+    }
+    a |> list.append(b) |> list.append(c) |> list.append(d)
+  })
+  |> list.group(function.identity)
+  |> dict.map_values(fn(_, pairs) { list.length(pairs) })
+  |> dict.filter(fn(_, counts) { counts == 2 })
+  |> dict.size
 }
 
 fn find_ij(map, is_ok) {
@@ -63,27 +89,27 @@ fn find_ij(map, is_ok) {
   })
 }
 
-fn step(map, i: Int, j: Int, search_for: String) -> List(#(Int, Int)) {
-  let steps = [
-    #(i - 1, j - 1),
-    #(i - 1, j),
-    #(i + 1, j),
-    #(i, j - 1),
-    #(i, j + 1),
-    #(i + 1, j - 1),
-    #(i + 1, j),
-    #(i + 1, j + 1),
-  ]
-  steps
-  |> list.filter(fn(step) {
-    {
-      use row <- result.try(dict.get(map, step.0))
-      use el <- result.try(dict.get(row, step.1))
-      case el {
-        x if x == search_for -> Ok(True)
-        _ -> Error(Nil)
+fn move(
+  map,
+  i: Int,
+  j: Int,
+  letters: List(String),
+  step: fn(Int, Int) -> #(Int, Int),
+) -> #(Int, #(Int, Int)) {
+  case letters {
+    [] -> #(1, #(i, j))
+    [letter, ..rest] ->
+      {
+        use row <- result.try(dict.get(map, i))
+        use el <- result.try(dict.get(row, j))
+        case el {
+          x if x == letter -> {
+            let #(i1, j1) = step(i, j)
+            Ok(move(map, i1, j1, rest, step))
+          }
+          _ -> Error(Nil)
+        }
       }
-    }
-    |> result.unwrap(False)
-  })
+      |> result.unwrap(#(0, #(i, j)))
+  }
 }
