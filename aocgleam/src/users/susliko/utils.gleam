@@ -9,6 +9,38 @@ pub type ReadError {
   FailedToParse(List(String))
 }
 
+/// Blocks separated by a newline become top-level list elements
+pub fn read_line_blocks(path: String) -> Result(List(List(String)), ReadError) {
+  case sf.read(path) {
+    Error(io_error) -> Error(IOError(io_error))
+    Ok(data) -> {
+      data
+      |> string.split("\n")
+      |> group_lines([], [])
+      |> Ok
+    }
+  }
+}
+
+fn group_lines(
+  lines: List(String),
+  total: List(List(String)),
+  cur: List(String),
+) -> List(List(String)) {
+  case lines {
+    [] -> {
+      let new_total = case cur {
+        [] -> total
+        cur -> list.prepend(total, cur |> list.reverse)
+      }
+      new_total |> list.reverse
+    }
+    [line, ..rest] if line == "" ->
+      group_lines(rest, list.prepend(total, cur), [])
+    [line, ..rest] -> group_lines(rest, total, list.prepend(cur, line))
+  }
+}
+
 pub fn read_ints(path: String) -> Result(List(List(Int)), ReadError) {
   read_input(path, " ", int.parse)
 }
@@ -47,7 +79,7 @@ pub fn read_input(
   }
 }
 
-fn parse_line(
+pub fn parse_line(
   line: String,
   line_sep: String,
   parse: fn(String) -> Result(a, Nil),
