@@ -15,29 +15,12 @@ pub fn read_line_blocks(path: String) -> Result(List(List(String)), ReadError) {
     Error(io_error) -> Error(IOError(io_error))
     Ok(data) -> {
       data
-      |> string.split("\n")
-      |> group_lines([], [])
+      |> string.split("\n\n")
+      |> list.map(fn(block) {
+        string.split(block, "\n") |> list.filter(fn(el) { el != "" })
+      })
       |> Ok
     }
-  }
-}
-
-fn group_lines(
-  lines: List(String),
-  total: List(List(String)),
-  cur: List(String),
-) -> List(List(String)) {
-  case lines {
-    [] -> {
-      let new_total = case cur {
-        [] -> total
-        cur -> list.prepend(total, cur |> list.reverse)
-      }
-      new_total |> list.reverse
-    }
-    [line, ..rest] if line == "" ->
-      group_lines(rest, list.prepend(total, cur), [])
-    [line, ..rest] -> group_lines(rest, total, list.prepend(cur, line))
   }
 }
 
