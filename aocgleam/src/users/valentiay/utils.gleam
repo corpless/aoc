@@ -17,6 +17,10 @@ pub fn read_strings(path: String) -> Result(List(List(String)), ReadError) {
   read_input(path, fn(s) { Ok(s) })
 }
 
+pub fn read_string(path: String) -> Result(String, ReadError) {
+  sf.read(path) |> result.map_error(fn(e) { IOError(e) })
+}
+
 pub fn read_input(
   path: String,
   parse: fn(String) -> Result(a, Nil),
