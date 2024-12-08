@@ -1,9 +1,7 @@
-import gleam/dict
 import gleam/int
 import gleam/io
 import gleam/list
 import gleam/order
-import gleam/set
 import gleam/string
 import simplifile
 
