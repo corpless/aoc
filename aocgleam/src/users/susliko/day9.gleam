@@ -16,7 +16,7 @@ pub fn main() {
         _ -> File(ind / 2, el)
       }
     })
-  // part1(diskmap) |> io.debug
+  part1(diskmap) |> io.debug
   part2(diskmap) |> io.debug
   ""
 }
