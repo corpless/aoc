@@ -1,11 +1,8 @@
 import gleam/int
 import gleam/io
 import gleam/list
-import gleam/order
-import gleam/pair
 import gleam/string
 import simplifile
-import users/mm/day10
 
 fn min_cost(ax, ay, bx, by, tx, ty) {
   let d = ax * by - bx * ay
