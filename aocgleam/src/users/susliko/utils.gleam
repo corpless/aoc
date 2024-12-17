@@ -9,6 +9,13 @@ pub type ReadError {
   FailedToParse(List(String))
 }
 
+pub fn read_lines(path: String) -> Result(List(String), ReadError) {
+  case sf.read(path) {
+    Error(io_error) -> Error(IOError(io_error))
+    Ok(data) -> data |> string.split("\n") |> Ok
+  }
+}
+
 /// Blocks separated by a newline become top-level list elements
 pub fn read_line_blocks(path: String) -> Result(List(List(String)), ReadError) {
   case sf.read(path) {
