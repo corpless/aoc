@@ -1,0 +1,4 @@
+profile = default
+margin = 80
+let-binding-spacing = compact
+

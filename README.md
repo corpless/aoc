@@ -34,3 +34,5 @@ dune exec <user>/<filename>.exe
 ```
 
 e.g. `dune exec susliko/day01.exe`
+
+For "watch" mode add '-w' at the end.

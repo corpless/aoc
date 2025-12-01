@@ -16,5 +16,3 @@ erl_*/
 
 # Ignore dependencies directory (if you're using rebar3 or mix for Erlang dependencies)
 deps/
-
-inputs/
