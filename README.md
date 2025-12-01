@@ -3,6 +3,7 @@
 Project structure
 
 ```
+2024
 └── aocgleam # per language
     ├── src
     │   └── users # dir per user
@@ -10,6 +11,13 @@ Project structure
     ├── inputs
     │   └── day1 # test data
     └── test
+2025
+└── ocaml # per language
+    ├── susliko # dir per user
+    │   ├── dayX.ml # script per day
+    │   └── dune # list of all scripts here
+    └── inputs # it's here, but in .gitignore
+        └── day1 # test data
 
 ```
 
@@ -18,3 +26,11 @@ To run a module (when inside [./aocgleam](./aocgleam)):
 ```
 gleam run -m users/<user>/<modulename>
 ```
+
+## Ocaml
+
+```
+dune exec <user>/<filename>.exe
+```
+
+e.g. `dune exec susliko/day01.exe`
