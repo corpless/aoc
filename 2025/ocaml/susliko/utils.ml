@@ -10,3 +10,24 @@ let read_sample day =
 let read_input day =
   let path = Printf.sprintf "inputs/day%d/input.txt" day in
   read_lines path
+
+let print_tuple (a, b) = Printf.printf "(%d, %d) " a b
+
+let print_int_tuple_list lst =
+  Printf.printf "[";
+  List.iter print_tuple lst;
+  Printf.printf "]\n"
+
+let print_int_list lst =
+  Printf.printf "[";
+  List.iter (Printf.printf "%d ") lst;
+  Printf.printf "]\n"
+
+let print_str_list lst =
+  Printf.printf "[";
+  List.iter (Printf.printf "%s ") lst;
+  Printf.printf "]\n"
+
+let tap f x =
+  f x;
+  x
