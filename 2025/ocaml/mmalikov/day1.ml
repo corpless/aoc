@@ -22,14 +22,16 @@ let count_states predicate =
   let final_state = List.fold_left f (50, 0) rotations in
   snd final_state
 
-let part1 =
+let _part1 =
   string_of_int
     (count_states (fun _pos new_pos _r -> if new_pos == 0 then 1 else 0))
 
 let part2_predicate pos _new_pos r =
   let full_rotations = Int.abs r / 100 in
   let remainder = r mod 100 in
-  let crossed_zero = (pos + remainder >= 100 || pos + remainder <= 0) && pos != 0 in
+  let crossed_zero =
+    (pos + remainder >= 100 || pos + remainder <= 0) && pos != 0
+  in
   full_rotations + if crossed_zero then 1 else 0
 
 let () = print_endline (string_of_int (count_states part2_predicate))

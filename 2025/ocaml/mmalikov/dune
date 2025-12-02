@@ -1,6 +1,2 @@
 (executables
- (names
-   day1
- )
- )
-
+ (names day1 day2))
