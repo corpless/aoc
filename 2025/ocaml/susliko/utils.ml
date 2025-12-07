@@ -30,3 +30,13 @@ let print_str_list lst =
 let tap f x =
   f x;
   x
+
+let group_by ~key lst =
+  let tbl = Hashtbl.create 16 in
+  List.iter
+    (fun x ->
+      let k = key x in
+      let existing = try Hashtbl.find tbl k with Not_found -> [] in
+      Hashtbl.replace tbl k (x :: existing))
+    lst;
+  Hashtbl.fold (fun k v acc -> (k, List.rev v) :: acc) tbl []
