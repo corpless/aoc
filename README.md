@@ -30,6 +30,7 @@ gleam run -m users/<user>/<modulename>
 ## Ocaml
 
 ```
+opam install lp lp-glpk
 dune exec <user>/<filename>.exe
 ```
 

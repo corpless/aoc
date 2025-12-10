@@ -8,6 +8,8 @@
    day6
    day8
    day9
+   day10
  )
+ (libraries lp lp-glpk)
  )
 
